@@ -31,6 +31,7 @@ function App() {
     setIsLoggedIn(false);
     setIsCodeValidated(false);
     localStorage.removeItem('validatedCode'); // Clear stored code
+    localStorage.removeItem('deviceId');
   };
 
   return (

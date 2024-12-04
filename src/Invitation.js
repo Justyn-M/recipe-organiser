@@ -6,6 +6,15 @@ import { getAuth } from 'firebase/auth';
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+const getDeviceId = () => {
+  let deviceId = localStorage.getItem('deviceId');
+  if (!deviceId) {
+    deviceId = crypto.randomUUID();
+    localStorage.setItem('deviceId', deviceId);
+  }
+  return deviceId;
+};
+
 const Invitation = ({ onValidationSuccess }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -13,6 +22,7 @@ const Invitation = ({ onValidationSuccess }) => {
   const handleValidateCode = async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
+    const deviceId = getDeviceId();
 
     try {
       const docRef = doc(db, 'invitations', code);
@@ -21,19 +31,22 @@ const Invitation = ({ onValidationSuccess }) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
 
-        // Check if the code is assigned to this user or unassigned
-        if (!data.userId || data.userId === user.email) {
-          // Save validated code locally
-          localStorage.setItem('validatedCode', code);
-
-          // If the code is unassigned, assign it to the user
-          if (!data.userId) {
-            await updateDoc(docRef, { userId: user.email });
+        // Check if the code is tied to the current shared user
+        if (data.userId === user.email) {
+          // If no deviceId is assigned, assign the current device
+          if (!data.deviceId) {
+            await updateDoc(docRef, { deviceId });
+            localStorage.setItem('validatedCode', code); // Store validated code locally
+            onValidationSuccess(code); // Notify App of successful validation
+          } else if (data.deviceId === deviceId) {
+            // Allow access if the code is already tied to this device
+            localStorage.setItem('validatedCode', code);
+            onValidationSuccess(code);
+          } else {
+            setError('This code is tied to another device.');
           }
-
-          onValidationSuccess(code); // Notify App of successful validation
         } else {
-          setError('This code is assigned to another user.');
+          setError('Invalid code for this user.');
         }
       } else {
         setError('Invalid code.');
@@ -42,6 +55,7 @@ const Invitation = ({ onValidationSuccess }) => {
       setError('An error occurred. Please try again.');
     }
   };
+
 
   return (
     <div>
