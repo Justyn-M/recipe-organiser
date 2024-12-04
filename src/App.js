@@ -1,9 +1,7 @@
-import './App.css';
-import app from './firebaseConfig';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './Login';
-import { getAuth, signOut } from "firebase/auth";
 import Invitation from './Invitation';
+import { getAuth, signOut } from 'firebase/auth';
 
 const auth = getAuth();
 
@@ -11,20 +9,28 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCodeValidated, setIsCodeValidated] = useState(false);
 
-  //Login Functionality
+  useEffect(() => {
+    // Check for a validated code in localStorage
+    const validatedCode = localStorage.getItem('validatedCode');
+    if (validatedCode) {
+      setIsCodeValidated(true);
+    }
+  }, []);
+
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
   };
 
-  const handleCodeValidationSuccess = () => {
+  const handleCodeValidationSuccess = (code) => {
+    localStorage.setItem('validatedCode', code);
     setIsCodeValidated(true);
   };
-
 
   const handleLogout = () => {
     signOut(auth);
     setIsLoggedIn(false);
     setIsCodeValidated(false);
+    localStorage.removeItem('validatedCode'); // Clear stored code
   };
 
   return (

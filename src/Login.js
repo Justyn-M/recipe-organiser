@@ -3,7 +3,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from './firebaseConfig';
 
 //password: X2JA1RM8!
-//Code: Test-User-2
+//Code: Testing1
 
 const auth = getAuth(app);
 
