@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from './firebaseConfig';
 
-//password X2JA1RM8!
+//password: X2JA1RM8!
+//Code: Test-User-2
 
 const auth = getAuth(app);
 
