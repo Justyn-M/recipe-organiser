@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import app from './firebaseConfig';
 import { getAuth } from 'firebase/auth';
+import { TextField, Button, Typography, Box } from '@mui/material';
+
 
 const db = getFirestore(app);
 const auth = getAuth(app);
@@ -58,22 +60,46 @@ const Invitation = ({ onValidationSuccess }) => {
 
 
   return (
-    <div>
-      <h2>Enter Invitation Code</h2>
+    <Box
+      sx={{
+        maxWidth: 400,
+        mx: 'auto',
+        mt: 5,
+        p: 3,
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+      }}
+    >
+      <Typography variant="h5" align="center" gutterBottom>
+        Enter Invitation Code
+      </Typography>
       <form onSubmit={handleValidateCode}>
-        <div>
-          <label>Code:</label>
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Validate</button>
+        <TextField
+          label="Code"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          required
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+        >
+          Validate
+        </Button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </div>
+      {error && (
+        <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 };
 

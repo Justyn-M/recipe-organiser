@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import Invitation from './Invitation';
 import { getAuth, signOut } from 'firebase/auth';
+import { Button, Typography, Box } from '@mui/material';
 
 const auth = getAuth();
 
@@ -35,19 +36,24 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <Box sx={{ textAlign: 'center', mt: 5 }}>
       {!isLoggedIn ? (
         <Login onLoginSuccess={handleLoginSuccess} />
       ) : !isCodeValidated ? (
         <Invitation onValidationSuccess={handleCodeValidationSuccess} />
       ) : (
-        <div>
-          <h1>Welcome to the Recipe Organizer!</h1>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
+        <Box>
+          <Typography variant="h4" gutterBottom>
+            Welcome to the Recipe Organizer!
+          </Typography>
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
+
 
 export default App;
