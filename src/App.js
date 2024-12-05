@@ -10,7 +10,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import HomeIcon from '@mui/icons-material/Home';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc  } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 
 const auth = getAuth();
@@ -96,132 +96,165 @@ function App() {
     setCurrentPage('home');
   };
 
+  const handleDelete = async (recipeId) => {
+    try {
+      await deleteDoc(doc(db, 'recipes', recipeId)); // Delete the recipe document
+      setRecipes((prevRecipes) =>
+        prevRecipes.filter((recipe) => recipe.id !== recipeId)
+      ); // Update UI by removing the deleted recipe
+      console.log('Recipe deleted successfully');
+    } catch (e) {
+      console.error('Error deleting recipe:', e);
+    }
+  };
+  
+
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
-        return (
-          <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom textAlign="center">
-              Welcome to the Recipe Organizer!
-            </Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                gap: 2,
-                mt: 3,
-              }}
-            >
-              {recipes.map((recipe) => (
-                <Box
-                  key={recipe.id}
-                  onClick={() => {
-                    setSelectedRecipe(recipe); // Set the selected recipe
-                    setCurrentPage('recipe-details'); // Navigate to recipe details page
-                  }}
-                  sx={{
-                    cursor: 'pointer',
-                    position: 'relative',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    backgroundColor: '#ddd',
-                  }}
-                >
-                  {recipe.photo ? (
-                    <img
-                      src={recipe.photo}
-                      alt={recipe.recipeName}
-                      style={{
-                        width: '100%',
-                        height: '150px',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  ) : (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%',
-                        height: '150px',
-                        backgroundColor: '#ccc',
-                      }}
-                    >
-                      <Typography variant="h6" color="textSecondary">
-                        No Image
-                      </Typography>
-                    </Box>
-                  )}
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                      color: '#fff',
-                      padding: '8px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Typography variant="h6">{recipe.recipeName}</Typography>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        );
-        
-        case 'recipe-details':
-          return (
-            <Box sx={{ p: 3 }}>
-              {selectedRecipe.photo && (
-                <img
-                  src={selectedRecipe.photo}
-                  alt={selectedRecipe.recipeName}
-                  style={{
-                    width: '100%',
-                    maxHeight: '300px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                  }}
-                />
-              )}
-              <Typography variant="h4" gutterBottom>
-                {selectedRecipe.recipeName}
-              </Typography>
-              <Typography variant="h6">Ingredients:</Typography>
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom textAlign="center">
+        Welcome to the Recipe Organizer!
+      </Typography>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: 2,
+          mt: 3,
+        }}
+      >
+        {recipes.map((recipe) => (
+          <Box
+            key={recipe.id}
+            onClick={() => {
+              setSelectedRecipe(recipe); // Set the selected recipe
+              setCurrentPage('recipe-details'); // Navigate to recipe details page
+            }}
+            sx={{
+              cursor: 'pointer',
+              position: 'relative',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              backgroundColor: '#ddd',
+            }}
+          >
+            {recipe.photo ? (
+              <img
+                src={recipe.photo}
+                alt={recipe.recipeName}
+                style={{
+                  width: '100%',
+                  height: '150px',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
               <Box
                 sx={{
-                  maxHeight: '200px',
-                  overflowY: 'auto',
-                  mt: 2,
-                  border: '1px solid #ddd',
-                  borderRadius: '8px',
-                  padding: '8px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: '100%',
+                  height: '150px',
+                  backgroundColor: '#ccc',
                 }}
               >
-                {selectedRecipe.ingredients.map((ingredient, index) => (
-                  <Typography key={index} variant="body1">
-                    • {ingredient}
-                  </Typography>
-                ))}
+                <Typography variant="h6" color="textSecondary">
+                  No Image
+                </Typography>
               </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: 3 }}
-                onClick={() => {
-                  setCurrentStepIndex(0); // Start from the first step
-                  setCurrentPage('cooking-step'); // Navigate to the cooking steps
-                }}
-              >
-                Start Cooking
-              </Button>
+            )}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                color: '#fff',
+                padding: '8px',
+                textAlign: 'center',
+              }}
+            >
+              <Typography variant="h6">{recipe.recipeName}</Typography>
             </Box>
-          );
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+        
+  case 'recipe-details':
+    return (
+      <Box sx={{ p: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mb: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={async () => {
+              await handleDelete(selectedRecipe.id); // Delete the recipe
+              setSelectedRecipe(null); // Clear the selected recipe
+              setCurrentPage('home'); // Navigate back to the home page
+            }}
+          >
+            Delete Recipe
+          </Button>
+        </Box>
+        {selectedRecipe.photo && (
+          <img
+            src={selectedRecipe.photo}
+            alt={selectedRecipe.recipeName}
+            style={{
+              width: '100%',
+              maxHeight: '300px',
+              objectFit: 'cover',
+              borderRadius: '8px',
+            }}
+          />
+        )}
+        <Typography variant="h4" gutterBottom>
+          {selectedRecipe.recipeName}
+        </Typography>
+        <Typography variant="h6">Ingredients:</Typography>
+        <Box
+          sx={{
+            maxHeight: '200px',
+            overflowY: 'auto',
+            mt: 2,
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            padding: '8px',
+          }}
+        >
+          {selectedRecipe.ingredients.map((ingredient, index) => (
+            <Typography key={index} variant="body1">
+              • {ingredient}
+            </Typography>
+          ))}
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3 }}
+          onClick={() => {
+            setCurrentStepIndex(0); // Start from the first step
+            setCurrentPage('cooking-step'); // Navigate to the cooking steps
+          }}
+        >
+          Start Cooking
+        </Button>
+      </Box>
+    );
+  
           
           case 'cooking-step':
             const step = selectedRecipe.steps[currentStepIndex];
