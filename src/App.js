@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import Invitation from './Invitation';
+import RecipeDetails from './RecipeDetails';
+import RecipeSteps from './RecipeSteps';
 import { getAuth, signOut } from 'firebase/auth';
 import { AppBar, Toolbar, Typography, Button, Box, Fab } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -15,9 +17,9 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCodeValidated, setIsCodeValidated] = useState(false);
   const [currentPage, setCurrentPage] = useState('home'); // Track current page
+  const [recipeData, setRecipeData] = useState(null); // Store recipe data
 
   useEffect(() => {
-    // Check for a validated code in localStorage
     const validatedCode = localStorage.getItem('validatedCode');
     if (validatedCode) {
       setIsCodeValidated(true);
@@ -37,12 +39,26 @@ function App() {
     signOut(auth);
     setIsLoggedIn(false);
     setIsCodeValidated(false);
-    localStorage.removeItem('validatedCode'); // Clear stored code
+    localStorage.removeItem('validatedCode');
     localStorage.removeItem('deviceId');
   };
 
   const handleAddRecipe = () => {
-    console.log('Add Recipe clicked'); // Placeholder for recipe creation
+    setCurrentPage('add-recipe-details');
+  };
+
+  const handleNext = (data) => {
+    setRecipeData(data);
+    setCurrentPage('add-recipe-steps');
+  };
+
+  const handleComplete = (steps) => {
+    const completeRecipe = {
+      ...recipeData,
+      steps,
+    };
+    console.log('Recipe Completed:', completeRecipe);
+    setCurrentPage('home');
   };
 
   const renderPage = () => {
@@ -69,6 +85,10 @@ function App() {
             </Typography>
           </Box>
         );
+      case 'add-recipe-details':
+        return <RecipeDetails onNext={handleNext} />;
+      case 'add-recipe-steps':
+        return <RecipeSteps onComplete={handleComplete} />;
       default:
         return null;
     }
@@ -82,7 +102,6 @@ function App() {
         <Invitation onValidationSuccess={handleCodeValidationSuccess} />
       ) : (
         <>
-          {/* AppBar */}
           <AppBar position="static">
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -94,10 +113,8 @@ function App() {
             </Toolbar>
           </AppBar>
 
-          {/* Main Content */}
           <Box sx={{ flexGrow: 1 }}>{renderPage()}</Box>
 
-          {/* Bottom Navigation */}
           <Box
             sx={{
               position: 'fixed',
