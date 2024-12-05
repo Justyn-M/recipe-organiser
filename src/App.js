@@ -23,7 +23,9 @@ function App() {
   const [recipes, setRecipes] = useState([]); // Store recipes from Firestore
   const [selectedRecipe, setSelectedRecipe] = useState(null); // Track the clicked recipe
   const [currentStepIndex, setCurrentStepIndex] = useState(0); // Track the current step for cooking
-
+  const [shoppingList, setShoppingList] = useState([]); // Track all ingredients in the shopping list
+  const [checkedIngredients, setCheckedIngredients] = useState([]); // Track checked ingredients
+  
   
 
   // Fetch recipes when on the home page
@@ -188,63 +190,83 @@ function App() {
   );
         
   case 'recipe-details':
-    return (
-      <Box sx={{ p: 3 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            mb: 2,
+  return (
+    <Box sx={{ p: 3 }}>
+      {/* Delete Recipe Button below App Bar */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mt: 2, // Adds margin below the app bar
+        }}
+      >
+        <Button
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={async () => {
+            await handleDelete(selectedRecipe.id); // Delete the recipe
+            setSelectedRecipe(null); // Clear the selected recipe
+            setCurrentPage('home'); // Navigate back to the home page
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={async () => {
-              await handleDelete(selectedRecipe.id); // Delete the recipe
-              setSelectedRecipe(null); // Clear the selected recipe
-              setCurrentPage('home'); // Navigate back to the home page
-            }}
-          >
-            Delete Recipe
-          </Button>
-        </Box>
-        {selectedRecipe.photo && (
-          <img
-            src={selectedRecipe.photo}
-            alt={selectedRecipe.recipeName}
-            style={{
-              width: '100%',
-              maxHeight: '300px',
-              objectFit: 'cover',
-              borderRadius: '8px',
-            }}
-          />
-        )}
-        <Typography variant="h4" gutterBottom>
-          {selectedRecipe.recipeName}
-        </Typography>
-        <Typography variant="h6">Ingredients:</Typography>
-        <Box
-          sx={{
-            maxHeight: '200px',
-            overflowY: 'auto',
-            mt: 2,
-            border: '1px solid #ddd',
+          Delete Recipe
+        </Button>
+      </Box>
+
+      {/* Recipe Photo */}
+      {selectedRecipe.photo && (
+        <img
+          src={selectedRecipe.photo}
+          alt={selectedRecipe.recipeName}
+          style={{
+            width: '100%',
+            maxHeight: '300px',
+            objectFit: 'cover',
             borderRadius: '8px',
-            padding: '8px',
           }}
-        >
-          {selectedRecipe.ingredients.map((ingredient, index) => (
-            <Typography key={index} variant="body1">
-              • {ingredient}
-            </Typography>
-          ))}
-        </Box>
+        />
+      )}
+
+      {/* Recipe Name */}
+      <Typography variant="h4" gutterBottom>
+        {selectedRecipe.recipeName}
+      </Typography>
+
+      {/* Ingredients Section */}
+      <Typography variant="h6">Ingredients:</Typography>
+      <Box
+        sx={{
+          maxHeight: '200px',
+          overflowY: 'auto',
+          mt: 2,
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          padding: '8px',
+        }}
+      >
+        {selectedRecipe.ingredients.map((ingredient, index) => (
+          <Typography key={index} variant="body1">
+            • {ingredient}
+          </Typography>
+        ))}
+      </Box>
+
+      {/* Buttons: Add to Shopping List and Start Cooking */}
+      <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
         <Button
           variant="contained"
           color="primary"
-          sx={{ mt: 3 }}
+          onClick={() => {
+            setShoppingList((prev) => [...prev, ...selectedRecipe.ingredients]); // Add ingredients to the shopping list
+            setCurrentPage('shopping-list'); // Navigate to the shopping list page
+          }}
+        >
+          Add to Shopping List
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
           onClick={() => {
             setCurrentStepIndex(0); // Start from the first step
             setCurrentPage('cooking-step'); // Navigate to the cooking steps
@@ -253,8 +275,8 @@ function App() {
           Start Cooking
         </Button>
       </Box>
-    );
-  
+    </Box>
+  );
           
           case 'cooking-step':
             const step = selectedRecipe.steps[currentStepIndex];
@@ -292,19 +314,79 @@ function App() {
               </Box>
             );          
 
-      case 'shopping-list':
-        return (
-          <Box sx={{ p: 3, textAlign: 'center' }}>
-            <Typography variant="h4" gutterBottom>
-              Ingredient Shopping List
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Your shopping list will be displayed here.
-            </Typography>
-          </Box>
-        );
+            case 'shopping-list':
+              return (
+                <Box sx={{ p: 3, position: 'relative', pb: 8 }}>
+                  <Typography variant="h4" gutterBottom textAlign="center">
+                    Shopping List
+                  </Typography>
+            
+                  {/* Ingredients to Buy */}
+                  <Box sx={{ maxHeight: '40vh', overflowY: 'auto', mb: 3, p: 2, border: '1px solid #ddd', borderRadius: '8px' }}>
+                    <Typography variant="h6" gutterBottom>
+                      To Buy
+                    </Typography>
+                    {shoppingList
+                      .filter((ingredient) => !checkedIngredients.includes(ingredient))
+                      .map((ingredient, index) => (
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                          <input
+                            type="checkbox"
+                            checked={false}
+                            onChange={() => {
+                              setCheckedIngredients((prev) => [...prev, ingredient]); // Move to checked
+                            }}
+                          />
+                          <Typography sx={{ ml: 2 }}>{ingredient}</Typography>
+                        </Box>
+                      ))}
+                  </Box>
+            
+                  {/* Bought Ingredients */}
+                  <Box sx={{ maxHeight: '40vh', overflowY: 'auto', p: 2, border: '1px solid #ddd', borderRadius: '8px' }}>
+                    <Typography variant="h6" gutterBottom>
+                      Bought
+                    </Typography>
+                    {checkedIngredients.map((ingredient, index) => (
+                      <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                        <input
+                          type="checkbox"
+                          checked={true}
+                          onChange={() => {
+                            setCheckedIngredients((prev) => prev.filter((item) => item !== ingredient)); // Move back to unchecked
+                          }}
+                        />
+                        <Typography sx={{ ml: 2 }}>{ingredient}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+            
+                  {/* Clear All Button */}
+                  <Box
+                    sx={{
+                      position: 'fixed',
+                      bottom: 72, // Place above the navigation bar
+                      right: 16,
+                      zIndex: 1200, // Ensure it appears above other elements
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => {
+                        setShoppingList([]); // Clear all ingredients
+                        setCheckedIngredients([]); // Clear checked ingredients
+                      }}
+                    >
+                      Clear All
+                    </Button>
+                  </Box>
+                </Box>
+              );            
+
       case 'add-recipe-details':
         return <RecipeDetails onNext={handleNext} />;
+
       case 'add-recipe-steps':
         return <RecipeSteps onComplete={handleComplete} />;
       default:
