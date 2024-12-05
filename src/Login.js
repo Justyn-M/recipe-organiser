@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from './firebaseConfig';
-import { TextField, Button, Typography, Box } from '@mui/material';
+import { TextField, Button, Typography, Grid, Box } from '@mui/material';
 
 //password: X2JA1RM8!
 //Code: Testing1
@@ -9,31 +9,55 @@ import { TextField, Button, Typography, Box } from '@mui/material';
 const auth = getAuth(app);
 
 const Login = ({ onLoginSuccess }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            // Attempt to log in with the shared credentials
-            await signInWithEmailAndPassword(auth, email, password);
-            onLoginSuccess();
-        } catch (err) {
-            setError('Invalid email or password. Please try again.');
-        }
-    };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      // Attempt to log in with the shared credentials
+      await signInWithEmailAndPassword(auth, email, password);
+      onLoginSuccess();
+    } catch (err) {
+      setError('Invalid email or password. Please try again.');
+    }
+  };
 
-    return (
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to right, #4caf50, #81c784)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        sx={{ minHeight: '100vh' }}
+      >
+        {/* Add the main title above the login box */}
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Custom Recipe Organizer
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            Organize your recipes with ease
+          </Typography>
+        </Box>
+
         <Box
           sx={{
             maxWidth: 400,
-            mx: 'auto',
-            mt: 5,
             p: 3,
             border: '1px solid #ddd',
             borderRadius: '8px',
             boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+            bgcolor: '#fff',
           }}
         >
           <Typography variant="h5" align="center" gutterBottom>
@@ -75,7 +99,10 @@ const Login = ({ onLoginSuccess }) => {
             </Typography>
           )}
         </Box>
-      );
-    };
+      </Grid>
+    </Box>
+  );
+};
+
 
 export default Login;

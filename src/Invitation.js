@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import app from './firebaseConfig';
 import { getAuth } from 'firebase/auth';
-import { TextField, Button, Typography, Box } from '@mui/material';
+import { TextField, Button, Typography, Grid, Box } from '@mui/material';
 
 
 const db = getFirestore(app);
@@ -60,46 +60,52 @@ const Invitation = ({ onValidationSuccess }) => {
 
 
   return (
-    <Box
-      sx={{
-        maxWidth: 400,
-        mx: 'auto',
-        mt: 5,
-        p: 3,
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-      }}
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      sx={{ minHeight: '100vh' }}
     >
-      <Typography variant="h5" align="center" gutterBottom>
-        Enter Invitation Code
-      </Typography>
-      <form onSubmit={handleValidateCode}>
-        <TextField
-          label="Code"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          required
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Validate
-        </Button>
-      </form>
-      {error && (
-        <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-          {error}
+      <Box
+        sx={{
+          maxWidth: 400,
+          p: 3,
+          border: '1px solid #ddd',
+          borderRadius: '8px',
+          boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+          bgcolor: '#fff',
+        }}
+      >
+        <Typography variant="h5" align="center" gutterBottom>
+          Enter Invitation Code
         </Typography>
-      )}
-    </Box>
+        <form onSubmit={handleValidateCode}>
+          <TextField
+            label="Code"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            required
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Validate
+          </Button>
+        </form>
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
+      </Box>
+    </Grid>
   );
 };
 
