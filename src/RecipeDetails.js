@@ -7,6 +7,7 @@ const RecipeDetails = ({ onNext }) => {
   const [ingredients, setIngredients] = useState('');
   const [creatorName, setCreatorName] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [cookTime, setCookTime] = useState(''); // New state for cook time
 
   const handlePhotoChange = (event) => {
     setPhoto(event.target.files[0]);
@@ -18,6 +19,7 @@ const RecipeDetails = ({ onNext }) => {
       ingredients: ingredients.split(','), // Split ingredients by commas
       creatorName,
       photo,
+      cookTime, // Add cook time to recipe data
     };
     onNext(recipeData);
   };
@@ -36,6 +38,15 @@ const RecipeDetails = ({ onNext }) => {
           margin="normal"
           value={recipeName}
           onChange={(e) => setRecipeName(e.target.value)}
+          required
+        />
+         <TextField
+          label="Cook Time (e.g., 30 minutes)"
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={cookTime}
+          onChange={(e) => setCookTime(e.target.value)}
           required
         />
         <TextField
