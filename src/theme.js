@@ -10,7 +10,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Roboto Slab, Roboto, Arial, sans-serif',
     h5: {
       fontWeight: 600,
     },

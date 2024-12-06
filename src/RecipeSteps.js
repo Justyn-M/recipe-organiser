@@ -17,45 +17,78 @@ const RecipeSteps = ({ onComplete }) => {
   };
 
   return (
-    <Box sx={{ p: 3, textAlign: 'center' }}>
-      <Typography variant="h5" gutterBottom>
-        Add Recipe Steps
-      </Typography>
-
-      <TextField
-        label={`Step ${steps.length + 1}`}
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={currentStep}
-        onChange={(e) => setCurrentStep(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleAddStep}
-        sx={{ mt: 2 }}
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+      }}
+    >
+      {/* Scrollable Content */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: 'auto', // This section scrolls
+          padding: 3,
+          textAlign: 'center',
+          paddingBottom: '80px', // Extra space to avoid hiding steps behind the button
+        }}
       >
-        Add Step
-      </Button>
+        <Typography variant="h5" gutterBottom>
+          Add Recipe Steps
+        </Typography>
 
-      <Box sx={{ mt: 3 }}>
-        <Typography variant="h6">Steps Added:</Typography>
-        {steps.map((step, index) => (
-          <Typography key={index} variant="body1">
-            {index + 1}. {step}
-          </Typography>
-        ))}
+        <TextField
+          label={`Step ${steps.length + 1}`}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={currentStep}
+          onChange={(e) => setCurrentStep(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddStep}
+          sx={{ mt: 2 }}
+        >
+          Add Step
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          fullWidth
+          onClick={handleComplete}
+          sx={{ mt: 2 }}
+        >
+          Complete Recipe
+        </Button>
+
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6">Steps Added:</Typography>
+          {steps.map((step, index) => (
+            <Typography key={index} variant="body1" sx={{ mt: 1 }}>
+              {index + 1}. {step}
+            </Typography>
+          ))}
+        </Box>
       </Box>
 
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleComplete}
-        sx={{ mt: 3 }}
+      {/* Fixed Footer Bar for the Complete Button */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: '#fff',
+          borderTop: '1px solid #ddd',
+          padding: 2,
+          textAlign: 'center',
+        }}
       >
-        Complete Recipe
-      </Button>
+      </Box>
     </Box>
   );
 };
