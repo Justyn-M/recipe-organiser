@@ -3,8 +3,6 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from './firebaseConfig';
 import { TextField, Button, Typography, Grid, Box } from '@mui/material';
 
-//password: X2JA1RM8!
-//Code: Testing1
 
 const auth = getAuth(app);
 
