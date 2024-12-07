@@ -238,6 +238,7 @@ function App() {
                 variant="contained"
                 color="error"
                 size="small"
+                sx={{ fontFamily: 'Cantarell, sans-serif' }}
                 onClick={async () => {
                   await handleDelete(selectedRecipe.id); // Delete the recipe
                   setSelectedRecipe(null);
@@ -267,6 +268,11 @@ function App() {
               {/* Recipe Name */}
               <Typography variant="h4" gutterBottom>
                 {selectedRecipe.recipeName}
+              </Typography>
+
+              {/* Recipe Creator */}
+              <Typography variant="h6" gutterBottom  sx={{ fontSize: '20px' }}>
+                Creator: {selectedRecipe.creatorName}
               </Typography>
 
               {/* Ingredients Section */}
@@ -302,7 +308,7 @@ function App() {
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{ mb: 2 }}
+                sx={{ mb:2, fontFamily: 'Cantarell, sans-serif' }}
                 onClick={() => {
                   setShoppingList((prev) => [...prev, ...selectedRecipe.ingredients]);
                   setCurrentPage('shopping-list'); // Navigate to the shopping list page
@@ -492,6 +498,7 @@ function App() {
     }
   };
 
+  //elevation makes appbar pop out due to shadows
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {!isLoggedIn ? (
@@ -500,7 +507,7 @@ function App() {
         <Invitation onValidationSuccess={handleCodeValidationSuccess} />
       ) : (
         <>
-          <AppBar position="static">
+          <AppBar position="static" elevation={4}>
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Recipe Organizer
