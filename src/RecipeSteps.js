@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const RecipeSteps = ({ onComplete }) => {
-  const [steps, setSteps] = useState([]);
+const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
+  const [steps, setSteps] = useState(initialSteps);
   const [currentStep, setCurrentStep] = useState('');
 
   const handleAddStep = () => {
@@ -12,38 +13,41 @@ const RecipeSteps = ({ onComplete }) => {
     }
   };
 
-  const handleComplete = () => {
-    onComplete(steps);
+  const handleDeleteStep = (index) => {
+    setSteps(steps.filter((_, i) => i !== index));
+  };
+
+  const handleSave = () => {
+    if (steps.length === 0) {
+      alert('No steps to save!');
+      return;
+    }
+    onSaveSteps(steps);
+    alert('Steps saved successfully!');
   };
 
   return (
     <Box
       sx={{
-        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        position: 'relative',
+        height: '100vh',
+        overflowY: 'auto', // Make the entire page scrollable
+        padding: 3,
+        pb: 12, // Add padding to prevent content overlap, 'save steps' does not overlap with 'add recipe' button
       }}
     >
-      {/* Scrollable Content */}
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflowY: 'auto', // This section scrolls
-          padding: 3,
-          textAlign: 'center',
-          paddingBottom: '80px', // Extra space to avoid hiding steps behind the button
-        }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Add Recipe Steps
-        </Typography>
+      {/* Page Title */}
+      <Typography variant="h5" gutterBottom>
+        Edit Recipe Steps
+      </Typography>
 
+      {/* Add Step Input */}
+      <Box sx={{ mb: 2 }}>
         <TextField
           label={`Step ${steps.length + 1}`}
           variant="outlined"
           fullWidth
-          margin="normal"
           value={currentStep}
           onChange={(e) => setCurrentStep(e.target.value)}
         />
@@ -51,43 +55,44 @@ const RecipeSteps = ({ onComplete }) => {
           variant="contained"
           color="primary"
           onClick={handleAddStep}
-          sx={{ mt: 2 }}
+          sx={{ mt: 1 }}
         >
           Add Step
         </Button>
+      </Box>
+
+      {/* Steps List */}
+      <Box sx={{ mt: 3 }}>
+        <Typography variant="h6">Steps:</Typography>
+        {steps.map((step, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mt: 1,
+            }}
+          >
+            <Typography variant="body1">{`${index + 1}. ${step}`}</Typography>
+            <IconButton color="error" onClick={() => handleDeleteStep(index)}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Save Steps Button */}
+      <Box sx={{ mt: 3 }}>
         <Button
           variant="contained"
           color="secondary"
           fullWidth
-          onClick={handleComplete}
-          sx={{ mt: 2 }}
+          onClick={handleSave}
+          sx={{ fontFamily: 'Cantarell, sans-serif', fontWeight: 'bold' }}
         >
-          Complete Recipe
+          Save Steps
         </Button>
-
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="h6">Steps Added:</Typography>
-          {steps.map((step, index) => (
-            <Typography key={index} variant="body1" sx={{ mt: 1 }}>
-              {index + 1}. {step}
-            </Typography>
-          ))}
-        </Box>
-      </Box>
-
-      {/* Fixed Footer Bar for the Complete Button */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: '#fff',
-          borderTop: '1px solid #ddd',
-          padding: 2,
-          textAlign: 'center',
-        }}
-      >
       </Box>
     </Box>
   );

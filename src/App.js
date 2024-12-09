@@ -10,7 +10,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import HomeIcon from '@mui/icons-material/Home';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from './firebaseConfig'; // Import your Firebase Storage setup
@@ -252,11 +252,21 @@ function App() {
               variant="contained"
               color="primary"
               size="small"
-              sx={{ fontFamily: 'Cantarell, sans-serif', width: '120px', ml: 'auto' }} //Set width and ml pushes button tot he right
+              sx={{ fontFamily: 'Cantarell, sans-serif', width: '120px', ml: 'auto' }} //Set width and ml pushes button to the right
               onClick={() => setCurrentPage('edit-recipe')} 
               >
                 Edit Recipe
               </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{fontFamily: 'Cantarell, sans-serif', width: '120px', ml: 'auto'}}
+                onClick={() => setCurrentPage('edit-steps')}
+              >
+                Edit Steps
+              </Button>
+
             </Box>
 
             {/* Recipe Content */}
@@ -513,6 +523,25 @@ function App() {
               onComplete={() => setCurrentPage('recipe-details')} // Return to details page
             />
           );
+
+         case 'edit-steps':
+  return (
+    <RecipeSteps
+      initialSteps={selectedRecipe.steps} // Pass existing steps
+      onSaveSteps={async (updatedSteps) => {
+        try {
+          const recipeRef = doc(db, 'recipes', selectedRecipe.id);
+          await updateDoc(recipeRef, { steps: updatedSteps }); // Update Firestore
+          setSelectedRecipe({ ...selectedRecipe, steps: updatedSteps }); // Update local state
+          setCurrentPage('recipe-details'); // Navigate back to details
+        } catch (error) {
+          console.error('Error updating steps:', error);
+        }
+      }}
+    />
+  );
+
+          
         
     }
   };
