@@ -13,7 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from './firebaseConfig'; // Import your Firebase Storage setup
+import { storage } from './firebaseConfig'; // Import Firebase Storage setup
 import EditRecipe from './EditRecipe';
 
 const auth = getAuth();
@@ -94,7 +94,37 @@ function App() {
     //enabling the below sets it so that if a user logs out, admin has to make a new validation code.
     // localStorage.removeItem('validatedCode');
     // localStorage.removeItem('deviceId');
+    window.location.reload(); // Redirect to login page
   };
+
+  useEffect(() => {
+    let timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        alert("You will be logged out in 1 minute due to inactivity.");
+        setTimeout(handleLogout, 60 * 1000); // Log out after 1 minute
+      }, (4 * 60 * 60 * 1000) - (60 * 1000)); // 4 hours minus 1 minute      
+    };
+
+    // User activity events
+    const activityEvents = ["mousemove", "keydown", "click", "touchstart"];
+    activityEvents.forEach((event) =>
+      window.addEventListener(event, resetTimer)
+    );
+
+    // Initialize the timer
+    resetTimer();
+
+    // Cleanup on unmount
+    return () => {
+      clearTimeout(timeout);
+      activityEvents.forEach((event) =>
+        window.removeEventListener(event, resetTimer)
+      );
+    };
+  }, []);
 
   const handleAddRecipe = () => {
     setCurrentPage('add-recipe-details');
