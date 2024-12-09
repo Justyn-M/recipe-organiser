@@ -3,7 +3,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from './firebaseConfig';
 import { TextField, Button, Typography, Grid, Box } from '@mui/material';
 
-
+// Login file for web app
 const auth = getAuth(app);
 
 const Login = ({ onLoginSuccess }) => {
@@ -11,6 +11,7 @@ const Login = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Function that handles the login functionality
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -22,6 +23,7 @@ const Login = ({ onLoginSuccess }) => {
     }
   };
 
+  // Login UI
   return (
     <Box
       sx={{

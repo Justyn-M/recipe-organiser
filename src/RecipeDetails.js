@@ -9,6 +9,7 @@ const RecipeDetails = ({ onNext }) => {
   const [photo, setPhoto] = useState(null);
   const [cookTime, setCookTime] = useState(''); // New state for cook time
 
+  // Function for handling photo changes
   const handlePhotoChange = (event) => {
     setPhoto(event.target.files[0]);
   };
@@ -24,6 +25,8 @@ const RecipeDetails = ({ onNext }) => {
     onNext(recipeData);
   };
 
+
+  // App UI for adding recipe details page
   return (
     <Box sx={{ p: 3, textAlign: 'center' }}>
       <Typography variant="h5" gutterBottom>

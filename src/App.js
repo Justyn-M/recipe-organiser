@@ -71,6 +71,7 @@ function App() {
     fetchRecipes();
   }, [currentPage]);
 
+  // For ensuring page is only accessed after a validated code is typed
   useEffect(() => {
     const validatedCode = localStorage.getItem('validatedCode');
     if (validatedCode) {
@@ -78,10 +79,12 @@ function App() {
     }
   }, []);
 
+  // Login Success
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
   };
 
+  // Code validation success
   const handleCodeValidationSuccess = (code) => {
     localStorage.setItem('validatedCode', code);
     setIsCodeValidated(true);
@@ -180,9 +183,10 @@ function App() {
     }
   };
 
-
+// Function that renders the UI of all non-login pages of the app
   const renderPage = () => {
     switch (currentPage) {
+      // Home page UI
       case 'home':
         return (
           <Box
@@ -264,6 +268,7 @@ function App() {
           </Box>
         );
 
+        // Recipe details page UI
       case 'recipe-details':
         return (
           <Box
@@ -402,8 +407,7 @@ function App() {
           </Box>
         );
 
-
-
+// UI for cooking steps shown in each recipe
       case 'cooking-step':
         const step = selectedRecipe.steps[currentStepIndex];
         return (
@@ -440,6 +444,7 @@ function App() {
           </Box>
         );
 
+        // Shopping List Page UI
       case 'shopping-list':
         return (
           <Box
@@ -559,6 +564,7 @@ function App() {
           </Box>
         );
 
+        //Cases that render the UI of other files
       case 'add-recipe-details':
         return <RecipeDetails onNext={handleNext} />;
 
@@ -597,6 +603,7 @@ function App() {
     }
   };
 
+  // === AppBar & Navigation bar UI ===
   //elevation makes appbar pop out due to shadows
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -618,7 +625,6 @@ function App() {
           </AppBar>
 
           <Box sx={{ flexGrow: 1 }}>{renderPage()}</Box>
-
           <Box
             sx={{
               position: 'fixed',

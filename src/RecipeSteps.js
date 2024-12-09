@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
+const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
   const [steps, setSteps] = useState(initialSteps);
   const [currentStep, setCurrentStep] = useState('');
 
+  // Function to add a step
   const handleAddStep = () => {
     if (currentStep.trim() !== '') {
       setSteps([...steps, currentStep]);
@@ -13,10 +14,12 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
     }
   };
 
+  // Function to delete a step
   const handleDeleteStep = (index) => {
     setSteps(steps.filter((_, i) => i !== index));
   };
 
+  // Function to save steps
   const handleSave = () => {
     if (steps.length === 0) {
       alert('No steps to save!');
@@ -26,15 +29,25 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
     alert('Steps saved successfully!');
   };
 
+  // Function to complete the recipe
+  const handleComplete = () => {
+    if (steps.length === 0) {
+      alert('Please add at least one step to complete the recipe.');
+      return;
+    }
+    onComplete(steps); // Calls the function passed as a prop to upload the recipe
+    alert('Recipe completed and uploaded!');
+  };
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        overflowY: 'auto', // Make the entire page scrollable
+        overflowY: 'auto',
         padding: 3,
-        pb: 12, // Add padding to prevent content overlap, 'save steps' does not overlap with 'add recipe' button
+        pb: 12, // Add padding to prevent content overlap
       }}
     >
       {/* Page Title */}
@@ -43,7 +56,14 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
       </Typography>
 
       {/* Add Step Input */}
-      <Box sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          mb: 2,
+          display: 'flex',
+          flexDirection: 'column', // Stack buttons vertically
+          gap: 1, // Add spacing between buttons
+        }}
+      >
         <TextField
           label={`Step ${steps.length + 1}`}
           variant="outlined"
@@ -55,9 +75,17 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
           variant="contained"
           color="primary"
           onClick={handleAddStep}
-          sx={{ mt: 1 }}
         >
           Add Step
+        </Button>
+
+        {/* Complete Recipe Button */}
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => onComplete(steps)} // Pass steps to parent handler
+        >
+          Complete Recipe
         </Button>
       </Box>
 
@@ -99,3 +127,4 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps }) => {
 };
 
 export default RecipeSteps;
+

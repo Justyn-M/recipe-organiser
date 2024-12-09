@@ -12,6 +12,7 @@ const EditRecipe = ({ selectedRecipe, onComplete }) => {
   const [photo, setPhoto] = useState(null);
   const [cookTime, setCookTime] = useState(selectedRecipe.cookTime);
 
+// Functions for handling edits to recipes
   const handlePhotoChange = (event) => {
     setPhoto(event.target.files[0]);
   };
@@ -42,6 +43,7 @@ const EditRecipe = ({ selectedRecipe, onComplete }) => {
     }
   };
 
+// Edit Recipe page UI
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" gutterBottom>

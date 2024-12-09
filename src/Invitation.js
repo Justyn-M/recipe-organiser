@@ -8,6 +8,7 @@ import { TextField, Button, Typography, Grid, Box } from '@mui/material';
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Function that generates a new device ID for new devices
 const getDeviceId = () => {
   let deviceId = localStorage.getItem('deviceId');
   if (!deviceId) {
@@ -21,11 +22,12 @@ const getDeviceId = () => {
 };
 
 
-
 const Invitation = ({ onValidationSuccess }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
+
+  // Ensure code typed is validated according to the database
   const handleValidateCode = async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
@@ -63,7 +65,7 @@ const Invitation = ({ onValidationSuccess }) => {
     }
   };
 
-
+// Invitation page UI
   return (
     <Grid
       container
