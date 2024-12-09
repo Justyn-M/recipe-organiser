@@ -2,6 +2,33 @@
 This repository outlines a personal project of mine that I have created for my own personal use amoung myself and trusted individuals.
 The repository contains a recipe storage web app created using React and Firebase.
 
+# How to use code for your own projects
+
+1) Create a firebase project.
+2) Add blaze plan to the project (need due to storage)
+3) Add authentication (email & password), firestore database & storage.
+   == This project uses a shared user system for authentication. It is advised to copy the authentication system when forking the repository and recreating the project.
+   == If you change the authentication system, please ensure to make changes accordingly to the code.
+5) Add 'invitations' & 'recipes' collection to the database.
+6) Add a document into invitations:
+  Doc-Name
+  assigned - true
+  deviceId - string - <leave blank>
+  userId - string - <email you put into authentication>
+7) Add a document into recipes:
+  Doc-Name <auto-ID>
+  cookTime - string - <leave blank>
+  creatorName - string - <leave blank>
+  ingredients - array - string - <leave blank>
+  photo - string - <leave blank>
+  recipeName - string - <leave blank>
+  steps - array - string - <leave blank>
+  timestamp - timestamp
+8) Connect your firebase project to your code fork.
+9) Ensure connection between firebase storage to the database
+10) Run npm start in your code editor's terminal
+11) Debug/continue developing as needed
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
