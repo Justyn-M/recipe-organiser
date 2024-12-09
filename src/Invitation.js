@@ -11,10 +11,15 @@ const auth = getAuth(app);
 const getDeviceId = () => {
   let deviceId = localStorage.getItem('deviceId');
   if (!deviceId) {
-      console.error('Device ID is missing. This should not happen!');
+      console.log('Generating new deviceId');
+      deviceId = crypto.randomUUID(); // Generate a new deviceId
+      localStorage.setItem('deviceId', deviceId); // Store it persistently
+  } else {
+      console.log('Using existing deviceId:', deviceId);
   }
   return deviceId;
 };
+
 
 
 const Invitation = ({ onValidationSuccess }) => {
