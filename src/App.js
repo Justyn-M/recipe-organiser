@@ -3,7 +3,7 @@ import Login from './Login';
 import Invitation from './Invitation';
 import RecipeDetails from './RecipeDetails';
 import RecipeSteps from './RecipeSteps';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, setPersistence, browserLocalPersistence, onAuthStateChanged } from 'firebase/auth';
 import { AppBar, Toolbar, Typography, Button, Box, Fab } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -29,7 +29,27 @@ function App() {
   const [shoppingList, setShoppingList] = useState([]); // Track all ingredients in the shopping list
   const [checkedIngredients, setCheckedIngredients] = useState([]); // Track checked ingredients
 
+  useEffect(() => {
+    // Set session persistence to localStorage => Enables setPersistence
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        console.log("Session persistence set to localStorage");
+      })
+      .catch((error) => {
+        console.error("Error setting persistence:", error);
+      });
 
+    // Check user authentication state
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, []);
 
   // Fetch recipes when on the home page
   useEffect(() => {
@@ -71,8 +91,9 @@ function App() {
     signOut(auth);
     setIsLoggedIn(false);
     setIsCodeValidated(false);
-    localStorage.removeItem('validatedCode');
-    localStorage.removeItem('deviceId');
+    //enabling the below sets it so that if a user logs out, admin has to make a new validation code.
+    // localStorage.removeItem('validatedCode');
+    // localStorage.removeItem('deviceId');
   };
 
   const handleAddRecipe = () => {
