@@ -92,7 +92,7 @@ function App() {
     setIsLoggedIn(false);
     setIsCodeValidated(false);
     //enabling the below sets it so that if a user logs out, admin has to make a new validation code.
-    // localStorage.removeItem('validatedCode');
+    //localStorage.removeItem('validatedCode');
     // localStorage.removeItem('deviceId');
     window.location.reload(); // Redirect to login page
   };
