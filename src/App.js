@@ -14,6 +14,7 @@ import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore'
 import { db } from './firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from './firebaseConfig'; // Import your Firebase Storage setup
+import EditRecipe from './EditRecipe';
 
 const auth = getAuth();
 
@@ -224,9 +225,9 @@ function App() {
             }}
           >
             {/* Delete and Edit Buttons */}
-            <Box
+            <Box 
               sx={{
-                display: 'flex',
+                display: 'flex', //Flex box container for aligning edit and delete buttons
                 flexDirection: 'column',
                 alignItems: 'flex-end',
                 gap: 1, // Spacing between buttons
@@ -246,6 +247,15 @@ function App() {
                 }}
               >
                 Delete Recipe
+              </Button>
+              <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ fontFamily: 'Cantarell, sans-serif', width: '120px', ml: 'auto' }} //Set width and ml pushes button tot he right
+              onClick={() => setCurrentPage('edit-recipe')} 
+              >
+                Edit Recipe
               </Button>
             </Box>
 
@@ -495,6 +505,15 @@ function App() {
         return <RecipeSteps onComplete={handleComplete} />;
       default:
         return null;
+
+        case 'edit-recipe':
+          return (
+            <EditRecipe
+              selectedRecipe={selectedRecipe} // Pass the recipe to edit
+              onComplete={() => setCurrentPage('recipe-details')} // Return to details page
+            />
+          );
+        
     }
   };
 
