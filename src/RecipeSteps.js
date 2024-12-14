@@ -6,20 +6,20 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
   const [steps, setSteps] = useState(initialSteps);
   const [currentStep, setCurrentStep] = useState('');
 
-  // Add a step
   const handleAddStep = () => {
     if (currentStep.trim() !== '') {
       setSteps([...steps, currentStep.trim()]);
+      console.log('Step added:', currentStep.trim());
       setCurrentStep('');
     }
   };
 
-  // Delete a step
   const handleDeleteStep = (index) => {
-    setSteps(steps.filter((_, i) => i !== index));
+    const updatedSteps = steps.filter((_, i) => i !== index);
+    setSteps(updatedSteps);
+    console.log('Step deleted. Updated steps:', updatedSteps);
   };
 
-  // Save steps (for editing mode)
   const handleSave = () => {
     if (steps.length === 0) {
       alert('No steps to save!');
@@ -31,30 +31,23 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
     alert('Steps saved successfully!');
   };
 
-  // Complete the recipe (for adding a new recipe)
   const handleComplete = () => {
     // If there's a step typed but not yet added, add it now
+    let finalSteps = steps;
     if (currentStep.trim() !== '') {
-      const updatedSteps = [...steps, currentStep.trim()];
-      setSteps(updatedSteps);
+      finalSteps = [...steps, currentStep.trim()];
+      setSteps(finalSteps);
       setCurrentStep('');
-
-      if (onComplete) {
-        onComplete(updatedSteps);
-        alert('Recipe completed and uploaded!');
-      }
-      return;
     }
 
-    // If no steps exist at all
-    if (steps.length === 0) {
+    if (finalSteps.length === 0) {
       alert('Please add at least one step to complete the recipe.');
       return;
     }
 
-    // If steps are ready and onComplete is provided
+    console.log('Completing recipe with steps:', finalSteps);
     if (onComplete) {
-      onComplete(steps);
+      onComplete(finalSteps);
       alert('Recipe completed and uploaded!');
     }
   };
@@ -74,14 +67,7 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
         Edit Recipe Steps
       </Typography>
 
-      <Box
-        sx={{
-          mb: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-        }}
-      >
+      <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
         <TextField
           label={`Step ${steps.length + 1}`}
           variant="outlined"
