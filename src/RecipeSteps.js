@@ -6,7 +6,7 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
   const [steps, setSteps] = useState(initialSteps);
   const [currentStep, setCurrentStep] = useState('');
 
-  // Function to add a step
+  // Add a step
   const handleAddStep = () => {
     if (currentStep.trim() !== '') {
       setSteps([...steps, currentStep]);
@@ -14,29 +14,33 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
     }
   };
 
-  // Function to delete a step
+  // Delete a step
   const handleDeleteStep = (index) => {
     setSteps(steps.filter((_, i) => i !== index));
   };
 
-  // Function to save steps
+  // Save steps (for editing mode)
   const handleSave = () => {
     if (steps.length === 0) {
       alert('No steps to save!');
       return;
     }
-    onSaveSteps(steps);
+    if (onSaveSteps) {
+      onSaveSteps(steps);
+    }
     alert('Steps saved successfully!');
   };
 
-  // Function to complete the recipe
+  // Complete the recipe (for adding a new recipe)
   const handleComplete = () => {
     if (steps.length === 0) {
       alert('Please add at least one step to complete the recipe.');
       return;
     }
-    onComplete(steps); // Calls the function passed as a prop to upload the recipe
-    alert('Recipe completed and uploaded!');
+    if (onComplete) {
+      onComplete(steps);
+      alert('Recipe completed and uploaded!');
+    }
   };
 
   return (
@@ -47,21 +51,19 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
         height: '100vh',
         overflowY: 'auto',
         padding: 3,
-        pb: 12, // Add padding to prevent content overlap
+        pb: 12, // Add padding so content doesn't overlap
       }}
     >
-      {/* Page Title */}
       <Typography variant="h5" gutterBottom>
         Edit Recipe Steps
       </Typography>
 
-      {/* Add Step Input */}
       <Box
         sx={{
           mb: 2,
           display: 'flex',
-          flexDirection: 'column', // Stack buttons vertically
-          gap: 1, // Add spacing between buttons
+          flexDirection: 'column',
+          gap: 1,
         }}
       >
         <TextField
@@ -71,25 +73,18 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
           value={currentStep}
           onChange={(e) => setCurrentStep(e.target.value)}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddStep}
-        >
+        <Button variant="contained" color="primary" onClick={handleAddStep}>
           Add Step
         </Button>
 
-        {/* Complete Recipe Button */}
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => onComplete(steps)} // Pass steps to parent handler
-        >
-          Complete Recipe
-        </Button>
+        {/* Only show "Complete Recipe" if onComplete is provided (add mode) */}
+        {onComplete && (
+          <Button variant="contained" color="error" onClick={handleComplete}>
+            Complete Recipe
+          </Button>
+        )}
       </Box>
 
-      {/* Steps List */}
       <Box sx={{ mt: 3 }}>
         <Typography variant="h6">Steps:</Typography>
         {steps.map((step, index) => (
@@ -110,21 +105,22 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
         ))}
       </Box>
 
-      {/* Save Steps Button */}
-      <Box sx={{ mt: 3 }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          fullWidth
-          onClick={handleSave}
-          sx={{ fontFamily: 'Cantarell, sans-serif', fontWeight: 'bold' }}
-        >
-          Save Steps
-        </Button>
-      </Box>
+      {/* Only show "Save Steps" if onSaveSteps is provided (edit mode) */}
+      {onSaveSteps && (
+        <Box sx={{ mt: 3 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            onClick={handleSave}
+            sx={{ fontFamily: 'Cantarell, sans-serif', fontWeight: 'bold' }}
+          >
+            Save Steps
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
 
 export default RecipeSteps;
-
