@@ -51,10 +51,16 @@ function App() {
     return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
-  // Fetch recipes when on the home page
+  useEffect(() => {
+    if (isLoggedIn && isCodeValidated) {
+      setCurrentPage('home');
+    }
+  }, [isLoggedIn, isCodeValidated])
+
   useEffect(() => {
     const fetchRecipes = async () => {
-      if (currentPage === 'home') {
+      // Only fetch if on the home page, logged in, and code validated
+      if (currentPage === 'home' && isLoggedIn && isCodeValidated) {
         try {
           const querySnapshot = await getDocs(collection(db, 'recipes'));
           const recipesData = querySnapshot.docs.map((doc) => ({
@@ -67,9 +73,9 @@ function App() {
         }
       }
     };
-
+  
     fetchRecipes();
-  }, [currentPage]);
+  }, [currentPage, isLoggedIn, isCodeValidated]);  
 
   // For ensuring page is only accessed after a validated code is typed
   useEffect(() => {
