@@ -9,7 +9,7 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
   // Add a step
   const handleAddStep = () => {
     if (currentStep.trim() !== '') {
-      setSteps([...steps, currentStep]);
+      setSteps([...steps, currentStep.trim()]);
       setCurrentStep('');
     }
   };
@@ -33,10 +33,26 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
 
   // Complete the recipe (for adding a new recipe)
   const handleComplete = () => {
+    // If there's a step typed but not yet added, add it now
+    if (currentStep.trim() !== '') {
+      const updatedSteps = [...steps, currentStep.trim()];
+      setSteps(updatedSteps);
+      setCurrentStep('');
+
+      if (onComplete) {
+        onComplete(updatedSteps);
+        alert('Recipe completed and uploaded!');
+      }
+      return;
+    }
+
+    // If no steps exist at all
     if (steps.length === 0) {
       alert('Please add at least one step to complete the recipe.');
       return;
     }
+
+    // If steps are ready and onComplete is provided
     if (onComplete) {
       onComplete(steps);
       alert('Recipe completed and uploaded!');
@@ -51,7 +67,7 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
         height: '100vh',
         overflowY: 'auto',
         padding: 3,
-        pb: 12, // Add padding so content doesn't overlap
+        pb: 12,
       }}
     >
       <Typography variant="h5" gutterBottom>
@@ -77,7 +93,6 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
           Add Step
         </Button>
 
-        {/* Only show "Complete Recipe" if onComplete is provided (add mode) */}
         {onComplete && (
           <Button variant="contained" color="error" onClick={handleComplete}>
             Complete Recipe
@@ -105,7 +120,6 @@ const RecipeSteps = ({ initialSteps = [], onSaveSteps, onComplete }) => {
         ))}
       </Box>
 
-      {/* Only show "Save Steps" if onSaveSteps is provided (edit mode) */}
       {onSaveSteps && (
         <Box sx={{ mt: 3 }}>
           <Button
