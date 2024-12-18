@@ -351,6 +351,11 @@ function App() {
               <Typography variant="h4" gutterBottom>
                 {selectedRecipe.recipeName}
               </Typography>
+              
+              {/* Recipe Cook time */}
+              <Typography variant="h4" gutterBottom>
+                Cooking Time: {selectedRecipe.cookTime}
+              </Typography>
 
               {/* Recipe Creator */}
               <Typography variant="h6" gutterBottom  sx={{ fontSize: '20px' }}>
