@@ -353,7 +353,7 @@ function App() {
               </Typography>
               
               {/* Recipe Cook time */}
-              <Typography variant="h4" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Cooking Time: {selectedRecipe.cookTime}
               </Typography>
 
